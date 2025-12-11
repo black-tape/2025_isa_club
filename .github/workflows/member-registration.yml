@@ -1,0 +1,98 @@
+name: 成员登记自动处理
+
+on:
+  issues:
+    types: [opened, labeled]
+
+jobs:
+  welcome-member:
+    runs-on: ubuntu-latest
+    if: contains(github.event.issue.labels.*.name, '成员登记')
+
+    steps:
+      - name: 欢迎新成员
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue_number = context.issue.number;
+            const issue_title = context.payload.issue.title;
+
+            // 自动添加欢迎评论
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue_number,
+              body: `👋 欢迎加入ISA社团！
+
+感谢你提交成员登记信息！
+
+✅ 我们已经收到了你的信息，管理员会尽快审核。
+
+📌 接下来你可以：
+- 关注仓库以获取最新动态
+- 加入社团群组与大家交流
+- 浏览其他成员的技术方向
+- 查看即将开展的活动
+
+期待与你一起学习成长！🚀`
+            });
+
+            console.log('欢迎评论已添加');
+
+  auto-label:
+    runs-on: ubuntu-latest
+    if: contains(github.event.issue.title, '[成员登记]') || contains(github.event.issue.title, '[登记]')
+
+    steps:
+      - name: 自动添加标签
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue_number = context.issue.number;
+            const issue_body = context.payload.issue.body || '';
+
+            // 自动添加"成员登记"标签
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue_number,
+              labels: ['成员登记', '待审核']
+            });
+
+            // 根据内容自动添加技术方向标签
+            const techLabels = [];
+
+            if (issue_body.includes('前端') || issue_body.includes('Web')) {
+              techLabels.push('前端开发');
+            }
+            if (issue_body.includes('后端') || issue_body.includes('服务器')) {
+              techLabels.push('后端开发');
+            }
+            if (issue_body.includes('AI') || issue_body.includes('人工智能') || issue_body.includes('机器学习')) {
+              techLabels.push('人工智能');
+            }
+            if (issue_body.includes('数据分析') || issue_body.includes('数据科学')) {
+              techLabels.push('数据分析');
+            }
+            if (issue_body.includes('网络安全') || issue_body.includes('安全')) {
+              techLabels.push('网络安全');
+            }
+            if (issue_body.includes('嵌入式') || issue_body.includes('物联网')) {
+              techLabels.push('嵌入式');
+            }
+
+            if (techLabels.length > 0) {
+              // 需要先创建这些标签，或者使用try-catch处理
+              try {
+                await github.rest.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue_number,
+                  labels: techLabels
+                });
+              } catch (error) {
+                console.log('部分标签可能不存在，需要手动创建');
+              }
+            }
+
+            console.log('标签已自动添加');

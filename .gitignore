@@ -1,0 +1,37 @@
+# .gitignore
+
+# 操作系统文件
+.DS_Store
+Thumbs.db
+
+# 编辑器配置
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 临时文件
+*.tmp
+*.bak
+
+# 日志文件
+*.log
+
+# 成员数据导出（如果有）
+exports/
+backups/
+*.xlsx
+*.csv
+
+# 敏感信息
+.env
+secrets/
+credentials/
+
+# Node模块（如果将来添加）
+node_modules/
+
+# Python缓存（如果将来添加）
+__pycache__/
+*.pyc

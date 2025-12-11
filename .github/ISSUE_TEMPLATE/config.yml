@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 💬 社团讨论区
+    url: https://github.com/yourusername/2025_isa_club/discussions
+    about: 有任何问题或想法，欢迎在讨论区交流
+  - name: 📖 社团活动安排
+    url: https://github.com/yourusername/2025_isa_club/projects
+    about: 查看社团的活动安排和项目进展
